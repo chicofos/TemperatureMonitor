@@ -1,0 +1,65 @@
+<% include header.html %>
+
+<style>
+    .styles1 {
+        color:red;
+    }
+</style>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <a class="navbar-brand" href="#">Monitor</a>
+            </div>
+        </div>
+    </nav>
+    <br><br>
+<div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    
+                    <div class="intro-text">
+                        <span class="name" id="text">Temperature Sensor: <span id="tempval"></span></span>
+                        
+                        
+                       <div id="temperatures" style="width: 600px; height: 200px" class="styles1"></div>
+                       
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    
+   $(document).ready(function(){
+            
+     var temperatures = $('#temperatures').epoch( 
+     { 
+         type: 'time.line', 
+         axes: ['left', 'bottom', 'right'], 
+         data: [ { 
+             values: [ { 
+                 time: Date.now()/1000, 
+                 y: 0 } ] 
+                } ], 
+            } ); 
+            
+    var socket = io();
+
+    socket.on('temp', function(dataPoint){
+        
+         temperatures.push(dataPoint); 
+        socket.emit('recived');
+    });
+    
+});
+
+
+</script>
+
+
+    <script src="js/d3.js"></script>
+    <script src="js/epoch.js"></script>
+</body>
