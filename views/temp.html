@@ -1,10 +1,5 @@
 <% include header.html %>
 
-<style>
-    .styles1 {
-        color:red;
-    }
-</style>
 <body>
     <nav class="navbar navbar-default">
         <div class="container">
@@ -16,16 +11,16 @@
     <br><br>
 <div class="container">
             <div class="row">
-                <div class="col-lg-12">
-                    
-                    <div class="intro-text">
-                        <span class="name" id="text">Temperature Sensor: <span id="tempval"></span></span>
-                        
-                        
-                       <div id="temperatures" style="width: 600px; height: 200px" class="styles1"></div>
-                       
-                        
-                    </div>
+                <div class="col-lg-3">
+                    <div align="center">
+                    <span>Temperature</span>
+                    <div id="gaugeChart" class="epoch gauge-small"></div>
+                    </div>  
+                </div>
+                <div class="col-lg-9">
+                    <div align="center">
+                     <div id="temperatures" style="width: 60%; height: 200px" class="styles1"></div>
+                     </div>
                 </div>
             </div>
         </div>
@@ -42,15 +37,24 @@
          data: [ { 
              values: [ { 
                  time: Date.now()/1000, 
-                 y: 0 } ] 
-                } ], 
+                 y: 50 } ] 
+                } ],
+                 range: [0, 40] 
             } ); 
-            
+    
+    var valvula = $('#gaugeChart').epoch({
+        type: 'time.gauge',
+        value: 0.0,
+        domain: [0, 40],
+        format: function(v) { return (v).toFixed(2) + ' C'; }
+    });
+              
     var socket = io();
 
     socket.on('temp', function(dataPoint){
-        
+        $("#tempval").text(dataPoint[0].y);
          temperatures.push(dataPoint); 
+         valvula.push(dataPoint[0].y)
         socket.emit('recived');
     });
     
