@@ -52,7 +52,7 @@
     var socket = io();
 
     socket.on('temp', function(dataPoint){
-        $("#tempval").text(dataPoint[0].y);
+        // $("#tempval").text(dataPoint[0].y);
          temperatures.push(dataPoint); 
          valvula.push(dataPoint[0].y)
         socket.emit('recived');

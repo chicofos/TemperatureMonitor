@@ -16,13 +16,9 @@ var dataPoint = [ {
 var board = new five.Board({port : 'COM3'});
 
 var temp = 0;
+var lcd;
 
 board.on("ready", function() {
-  
-// var virtual = new five.Board.Virtual(
-//     new five.Expander("MCP23017")
-//   );
-  
 
  var temperature = new five.Thermometer({
     controller: "LM35",
@@ -30,33 +26,24 @@ board.on("ready", function() {
   });
 
   temperature.on("data", function() {
-    console.log(this.celsius + "°C");
+    //console.log(this.celsius + "°C");
     temp = this.celsius;
   });
   
-});
-      
-io.on('connection', function(socket){
-  
-  console.log('a user connected');
-  
 
-  //Initial emit
-  socket.emit("temp", dataPoint);
-       
-  socket.on('recived', function(){
-      
-    setTimeout(function() {
-
-        var newPoint = [{ 
-          time: Date.now()/1000, 
-          y: temp 
-        }];
-        
-        socket.emit("temp", newPoint);
-        
-    }, 1000);
-    
+lcd = new five.LCD({
+    // LCD pin name  RS  EN  DB4 DB5 DB6 DB7
+    // Arduino pin # 7    8   9   10  11  12
+    pins: [7, 8, 9, 10, 11, 12],
+    backlight: 6,
+    rows: 2,
+    cols: 20
+  });
+  
+  lcd.clear().cursor(0, 0).print("Temperature:");
+  
+  this.repl.inject({
+    lcd: lcd
   });
   
 });
@@ -72,7 +59,8 @@ app.use(express.static(__dirname + '/public'));
 //Routes
 app.get('/', function(req, res){
     //get initial temperature
-    res.render('temp', { temp: 20 });
+    lcd.cursor(1, 5).print(temp);
+    res.render('temp');
 });
 
 
@@ -80,9 +68,21 @@ http.listen(port, function(){
     console.log("server running on port %s", port);
 });
 
-//realtime 
-//io(server);
 
-
-
- 
+io.on('connection', function(socket){
+  console.log('a user connected');
+  
+  socket.emit('temp', dataPoint);
+  
+  socket.on('recived', function(){
+    setTimeout(function(){ 
+       lcd.cursor(1, 5).print(temp + " C");
+    socket.emit('temp', [ { 
+        time: Date.now() / 1000, 
+        y: temp }
+      ]);
+  }, 1000);
+    
+  });
+  
+});
