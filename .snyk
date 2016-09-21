@@ -1,0 +1,13 @@
+version: v1.5.0
+ignore: {}
+patch:
+  'npm:negotiator:20160616':
+    - socket.io > engine.io > accepts > negotiator:
+        patched: '2016-09-21T22:25:28.688Z'
+  'npm:ws:20160624':
+    - socket.io > engine.io > ws:
+        patched: '2016-09-21T22:25:28.688Z'
+    - socket.io-client > engine.io-client > ws:
+        patched: '2016-09-21T22:25:28.688Z'
+    - socket.io > socket.io-client > engine.io-client > ws:
+        patched: '2016-09-21T22:25:28.688Z'
