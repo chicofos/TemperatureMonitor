@@ -4,7 +4,9 @@
   "description": "Temperature Monitor",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -20,10 +22,12 @@
     "ejs": "^2.4.1",
     "express": "^4.13.4",
     "johnny-five": "^0.9.44",
-    "socket.io": "^1.4.5",
-    "socket.io-client": "^1.4.5"
+    "socket.io": "^2.0.0",
+    "socket.io-client": "^2.0.0",
+    "snyk": "^1.30.1"
   },
   "devDependencies": {
     "nodemon": "^1.9.1"
-  }
+  },
+  "snyk": true
 }
